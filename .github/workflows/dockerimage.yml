@@ -17,9 +17,6 @@ jobs:
     steps:
       - name: Checkout Current branch
         uses: actions/checkout@v1
-      - name: Set branch name
-        shell: bash
-        run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g')"
       - name: Build Docker Image
         run: |
           docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" && make publish
