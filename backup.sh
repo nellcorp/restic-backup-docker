@@ -1,9 +1,14 @@
 #!/bin/sh
 
+VERSION=0.0.1
 lastLogfile="/var/log/backup-last.log"
 lastMailLogfile="/var/log/mail-last.log"
 lastMicrosoftTeamsLogfile="/var/log/microsoft-teams-last.log"
 
+version() {
+  echo $VERSION
+  exit 0
+}
 copyErrorLog() {
   cp ${lastLogfile} /var/log/backup-error-last.log
 }
@@ -11,6 +16,10 @@ copyErrorLog() {
 logLast() {
   echo "$1" >> ${lastLogfile}
 }
+
+if [ "$1" = "version" ]; then
+    version
+fi
 
 if [ -f "/hooks/pre-backup.sh" ]; then
     echo "Starting pre-backup script ..."
