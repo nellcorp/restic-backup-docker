@@ -4,10 +4,10 @@ version:
 	echo ${version}
 	
 build:
-	docker build --rm -t figassis/restic-backup-docker:${version} .
+	docker buildx build --rm -t nellcorp/restic-backup-docker:${version} --platform linux/amd64,linux/arm64 .
 
 publish:
-	docker build --rm -t figassis/restic-backup-docker:${version} . && docker push figassis/restic-backup-docker:${version}
+	docker buildx build --rm -t nellcorp/restic-backup-docker:${version} --platform linux/amd64,linux/arm64 --push .
 
 run:
 	echo "Removing old container names 'backup-test' if exists"
