@@ -1,14 +1,4 @@
-FROM alpine:latest as rclone
-
-# Get rclone executable
-ADD https://downloads.rclone.org/rclone-current-linux-amd64.zip /
-RUN unzip rclone-current-linux-amd64.zip && mv rclone-*-linux-amd64/rclone /bin/rclone && chmod +x /bin/rclone
-
-FROM restic/restic:0.11.0
-
-RUN apk add --update --no-cache heirloom-mailx fuse curl
-
-COPY --from=rclone /bin/rclone /bin/rclone
+FROM restic/restic:0.17.3
 
 RUN \
     mkdir -p /mnt/restic /var/spool/cron/crontabs /var/log; \

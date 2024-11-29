@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION=0.0.1
+VERSION=0.0.2
 lastLogfile="/var/log/backup-last.log"
 lastMailLogfile="/var/log/mail-last.log"
 lastMicrosoftTeamsLogfile="/var/log/microsoft-teams-last.log"
@@ -67,27 +67,6 @@ fi
 
 end=`date +%s`
 echo "Finished Backup at $(date +"%Y-%m-%d %H:%M:%S") after $((end-start)) seconds"
-
-if [ -n "${TEAMS_WEBHOOK_URL}" ]; then
-    teamsTitle="Restic Last Backup Log"
-    teamsMessage=$( cat ${lastLogfile} | sed 's/"/\"/g' | sed "s/'/\'/g" | sed ':a;N;$!ba;s/\n/\n\n/g' )
-    teamsReqBody="{\"title\": \"${teamsTitle}\", \"text\": \"${teamsMessage}\" }"
-    sh -c "curl -H 'Content-Type: application/json' -d '${teamsReqBody}' '${TEAMS_WEBHOOK_URL}' > ${lastMicrosoftTeamsLogfile} 2>&1"
-    if [ $? == 0 ]; then
-        echo "Microsoft Teams notification successfully sent."
-    else
-        echo "Sending Microsoft Teams notification FAILED. Check ${lastMicrosoftTeamsLogfile} for further information."
-    fi
-fi
-
-if [ -n "${MAILX_ARGS}" ]; then
-    sh -c "mailx -v -S sendwait ${MAILX_ARGS} < ${lastLogfile} > ${lastMailLogfile} 2>&1"
-    if [ $? == 0 ]; then
-        echo "Mail notification successfully sent."
-    else
-        echo "Sending mail notification FAILED. Check ${lastMailLogfile} for further information."
-    fi
-fi
 
 if [ -f "/hooks/post-backup.sh" ]; then
     echo "Starting post-backup script ..."
